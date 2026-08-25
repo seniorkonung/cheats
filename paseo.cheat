@@ -1,0 +1,31 @@
+% paseo, setup
+
+# Установить paseo
+mise use -g npm:@getpaseo/cli
+
+% paseo, daemon, start
+
+# Запустить демон paseo
+paseo daemon start --listen <ip>:6767
+
+$ ip: hostname -I | tr ' ' '\n' | sed '/^$/d' --- --prevent-extra
+
+% paseo, session-import
+@ paseo, daemon, start
+
+# Импортировать сессию codex в paseo
+paseo import --provider codex <session-uuid> --host <ip>:6767
+
+% paseo, session-reload
+@ paseo, daemon, start
+
+# Обновить историю сессии, которая была продолжена вне paseo
+paseo agent reload <session-id> --host <ip>:6767
+
+$ session-id: printf "" --- --header "Предварительно нужно узнать его командой paseo agent ls --host ..."
+
+% paseo, session-list
+@ paseo, daemon, start
+
+# Посмотреть список всех сессий
+paseo agent ls --host <ip>:6767

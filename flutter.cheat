@@ -21,8 +21,6 @@ flutter create \
 $ platforms: printf '%s\n' linux windows macos ios android web --- --multi --map "paste -sd, -"
 $ reverse-domain: printf "" --- --header "Например: com.appname"
 
-% flutter, create
-
 # Добавить новые платформы в существующий проект
 flutter create \
     --platforms=<platforms> \
