@@ -1,0 +1,33 @@
+% mise, env, get
+
+# Посмотреть список переменных окружения установленных mise
+mise env
+
+% mise, env, set
+
+# Установить глобальную переменную окружения
+mise set -g <env>
+
+$ env: printf "" --- --header 'NAME="value"'
+
+% mise, env, unset
+
+# Очистить глобальную переменную окружения
+mise unset -g <env>
+
+$ env: printf "" --- --header 'NAME'
+
+% mise, alias, set
+
+# Сохранить глобальный алиас
+mise shell-alias set <name> <value>
+
+% mise, alias, ls
+
+# Посмотреть список доступных алиасов
+mise shell-alias ls
+
+% mise, alias, unset
+
+# Очистить алиас по названию
+mise shell-alias unset <name>

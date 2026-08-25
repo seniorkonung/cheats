@@ -27,3 +27,11 @@ $ reverse-domain: printf "" --- --header "Например: com.appname"
 flutter create \
     --platforms=<platforms> \
     .
+
+% flutter, deps
+
+# Установить зависимости (аналог npm install)
+flutter pub get
+
+# Посмотреть устаревшие зависимости
+flutter pub outdated

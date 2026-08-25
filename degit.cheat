@@ -1,7 +1,9 @@
-% degit, utils
+% degit, setup
 
 # Установить degit с помощью mise
 mise use -g npm:degit
+
+% degit, copy
 
 # Скопировать содержимое папки из удалённого git репозитория в текущую директорию
 degit git@github.com/<src> <dist>

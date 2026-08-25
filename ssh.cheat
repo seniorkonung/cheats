@@ -1,0 +1,13 @@
+% ssh, bitwarden, setup
+
+# Установить публичный ключ bitwarden
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICr/EKLxD1nEDNvcYrSmlD+Zk0rlzXLYk8Dg2xoW9QN8" > ~/.ssh/bitwarden.pub
+
+# Установить агента bitwarden как агент по умолчанию (предварительно включив агента в настройках приложения)
+grep -Eq '^[[:space:]]*IdentityAgent[[:space:]]+~/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent\.sock[[:space:]]*$' ~/.ssh/config \
+  || printf '\nHost *\n    IdentityAgent ~/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock\n' >> ~/.ssh/config
+
+% ssh-copy-id
+
+# Скопировать ключ bitwarden на удалённый хост
+ssh-copy-id -f -i ~/.ssh/bitwarden.pub <user>@<address>
