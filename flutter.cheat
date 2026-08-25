@@ -3,8 +3,10 @@
 # Инициализировать репозиторий flutter в текущей папке
 flutter create \
     --platforms=<platforms> \
-    --android-language=kotlin \ # ничего не делает, если нет android платформы
+    --android-language=kotlin \
     --org=<reverse-domain> \
     --project-name=<project-name> \
     --empty \
     .
+
+$ platforms: printf '%s\n' linux windows macos ios android web --- --multi --map "paste -sd, -"
