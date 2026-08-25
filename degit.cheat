@@ -1,0 +1,10 @@
+% degit, utils
+
+# Установить degit с помощью mise
+mise use -g npm:degit
+
+# Скопировать содержимое папки из удалённого git репозитория в текущую директорию
+degit git@github.com/<src> <dist>
+
+$ src: printf "" --- --header "<owner>/<repo>[/folder/file]"
+$ dist: printf "" --- --header "Папка назначения. Текущая папка: ."

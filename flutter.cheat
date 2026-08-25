@@ -1,12 +1,29 @@
-% flutter, init
+% flutter, setup
+
+# Установка flutter в первый раз
+sudo apt-get update -y && \
+    sudo apt-get upgrade -y && \
+    sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa && \
+    m use flutter@<flutter-version>
+
+$flutter-version: printf "" --- --header "Для списка доступных версий: mise ls-remote flutter"
+
+% flutter, create
 
 # Инициализировать репозиторий flutter в текущей папке
 flutter create \
     --platforms=<platforms> \
-    --android-language=kotlin \
     --org=<reverse-domain> \
     --project-name=<project-name> \
     --empty \
     .
 
 $ platforms: printf '%s\n' linux windows macos ios android web --- --multi --map "paste -sd, -"
+$ reverse-domain: printf "" --- --header "Например: com.appname"
+
+% flutter, create
+
+# Добавить новые платформы в существующий проект
+flutter create \
+    --platforms=<platforms> \
+    .
