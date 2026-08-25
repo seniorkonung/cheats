@@ -1,0 +1,10 @@
+% flutter, init
+
+# Инициализировать репозиторий flutter в текущей папке
+flutter create \
+    --platforms=<platforms> \
+    --android-language=kotlin \ # ничего не делает, если нет android платформы
+    --org=<reverse-domain> \
+    --project-name=<project-name> \
+    --empty \
+    .
