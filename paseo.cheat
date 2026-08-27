@@ -29,3 +29,18 @@ $ session-id: printf "" --- --header "Предварительно нужно у
 
 # Посмотреть список всех сессий
 paseo agent ls --host <ip>:6767
+
+% paseo, workspace
+@ paseo, daemon, start
+
+# Добавить новую папку с проектом
+paseo workspace create --isolation local --path <folder> --title <title> --host <ip>:6767
+
+$ folder: find "$HOME/projects" \
+    -mindepth 1 \
+    -maxdepth 1 \
+    -type d \
+    -print \
+    --- --prevent-extra
+
+$ title: basename "$folder"
