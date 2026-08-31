@@ -2,3 +2,13 @@
 
 # Мягко откатить последний коммит
 git reset --soft HEAD~1
+
+% git, branch, rm
+
+# Удалить ветку безопасно
+git branch -d <branch>
+
+# Удалить ветку форсировано
+git branch -d <branch>
+
+$ branch: git for-each-ref --format='%(refname:short)' refs/heads/ | grep -vFx "$(git branch --show-current)"
