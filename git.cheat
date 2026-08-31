@@ -3,12 +3,22 @@
 # Мягко откатить последний коммит
 git reset --soft HEAD~1
 
-% git, branch, rm
+% git, branch, delete
 
 # Удалить ветку безопасно
 git branch -d <branch>
 
+$ branch: git for-each-ref --format='%(refname:short)' refs/heads/ | grep -vFx "$(git branch --show-current)"
+
+% git, branch, delete, force
+@ git, branch, delete
+
 # Удалить ветку форсировано
 git branch -d <branch>
 
-$ branch: git for-each-ref --format='%(refname:short)' refs/heads/ | grep -vFx "$(git branch --show-current)"
+% git, worktree, delete
+
+# Удалить связанное рабочее дерево безопасно
+git worktree remove "<worktree>"
+
+$ worktree: git worktree list --porcelain | sed -n 's/^worktree //p' | tail -n +2
