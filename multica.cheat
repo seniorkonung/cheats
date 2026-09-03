@@ -1,0 +1,39 @@
+% multica, daemon, start
+
+# Запустить всё для multica
+sudo docker compose -f ~/apps/multica/docker-compose.selfhost.yml up -d \
+    && multica daemon start
+
+% multica, project, add
+
+# Добавить локальный каталог в проект
+echo "<project_name> & <daemon_name>" && \
+    multica project resource add <project_id> \
+        --type local_directory \
+        --daemon-id <daemon_id> \
+        --local-path "<folder>"
+
+$ project_id: multica project list --output json \
+    | MULTICA_PROJECT_NAME="$project_name" jq -r \
+        '.[] | select(.title == env.MULTICA_PROJECT_NAME) | .id' \
+    --- --prevent-extra
+
+$ project_name: multica project list --output json \
+    | jq -r '.[].title' \
+    --- --prevent-extra
+
+$ daemon_id: multica runtime list --output json \
+    | MULTICA_RUNTIME_NAME="$daemon_name" jq -r \
+        '.[] | select(.name == env.MULTICA_RUNTIME_NAME) | .daemon_id' \
+    --- --prevent-extra
+
+$ daemon_name: multica runtime list --output json \
+    | jq -r '.[].name' \
+    --- --prevent-extra
+
+$ folder: find "$HOME/projects" \
+    -mindepth 1 \
+    -maxdepth 1 \
+    -type d \
+    -print \
+    --- --prevent-extra
