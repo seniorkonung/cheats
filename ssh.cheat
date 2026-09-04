@@ -11,3 +11,13 @@ grep -Eq '^[[:space:]]*IdentityAgent[[:space:]]+~/.var/app/com.bitwarden.desktop
 
 # Скопировать ключ bitwarden на удалённый хост
 ssh-copy-id -f -i ~/.ssh/bitwarden.pub <user>@<address>
+
+% ssh-server, setup
+
+# Установить ssh server
+sudo apt update -y && sudo apt install -y openssh-server
+
+% ssh-server, start
+
+# Запустить ssh server
+sudo systemctl start ssh
