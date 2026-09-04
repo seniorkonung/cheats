@@ -76,7 +76,7 @@ $ task-id: printf '%s\n' '<task-description>' | cut -d ' ' -f 1
 $ task-description: openspec instructions apply --change <change-name> --json \
   | jq -r '.tasks[] | select(.done == false) | .description' --- --prevent-extra
 
-% paseo, run, resolve, change, issue, openspec
+% paseo, resolve, change, issue, openspec
 @ shared
 
 # Запустить обсуждение change-review проблемам
@@ -107,7 +107,7 @@ EOF
 $ issue-id: echo '<issue-name>' | sed -nE 's/^[[:space:]]*(F[^[:space:]]*).*/\1/p'
 $ issue-name: cat <change-dir>/review.md | sed -nE '/^[[:space:]]*###[[:space:]]*F/ { s/^[[:space:]]*###[[:space:]]*//; s/[[:space:]]+$//; p; }' --- --prevent-extra
 
-% paseo, run, resolve, implementation, issue, openspec
+% paseo, resolve, implementation, issue, openspec
 @ shared
 
 # # Запустить обсуждение impl-review проблемам
@@ -137,3 +137,30 @@ EOF
 
 $ issue-id: echo '<issue-name>' | sed -nE 's/^[[:space:]]*(F[^[:space:]]*).*/\1/p'
 $ issue-name: cat <change-dir>/implementation-review.md | sed -nE '/^[[:space:]]*###[[:space:]]*F/ { s/^[[:space:]]*###[[:space:]]*//; s/[[:space:]]+$//; p; }' --- --prevent-extra
+
+% paseo, task, discuss, openspec
+@ shared
+
+# Запустить обсуждение запланированной проблемы
+message=$(
+cat <<'EOF'
+$openspec-task-deliberation <change-name>
+Задачи: <task-id>
+EOF
+); paseo run \
+    --provider codex \
+    --model "gpt-5.6-terra" \
+    --thinking xhigh \
+    --mode full-access \
+    --title 'Обсуждение <task-id> из <change-name>' \
+    --background "$message" \
+    --workspace "$(
+        paseo workspace create \
+            --isolation local \
+            --title 'Обсуждение <task-id> из <change-name>' \
+            --json | jq -r '.workspaceId'
+    )"
+
+$ task-id: openspec instructions apply --change <change-name> --json \
+  | jq -r '.tasks[] | select(.done == false) | [(.description | split(" ")[0]), .description] | @tsv' \
+  --- --delimiter '\t' --column 1 --multi --expand --prevent-extra
