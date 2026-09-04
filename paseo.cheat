@@ -1,40 +1,38 @@
 % paseo, setup
 
 # Установить paseo
-mise use -g npm:@getpaseo/cli
-
-% paseo, daemon, start
-
-# Запустить демон paseo
-paseo daemon start --listen <ip>:6767
+mise use -g npm:@getpaseo/cli && \
+    mise set -g PASEO_HOST=<ip>:6767
 
 $ ip: hostname -I | tr ' ' '\n' | sed '/^$/d' --- --prevent-extra
 
+% paseo, daemon, start
+@ paseo, setup
+
+# Запустить демон paseo
+paseo daemon start --listen $PASEO_HOST
+
 % paseo, session-import
-@ paseo, daemon, start
 
 # Импортировать сессию codex в paseo
-paseo import --provider codex <session-uuid> --host <ip>:6767
+paseo import --provider codex <session-uuid>
 
 % paseo, session-reload
-@ paseo, daemon, start
 
 # Обновить историю сессии, которая была продолжена вне paseo
-paseo agent reload <session-id> --host <ip>:6767
+paseo agent reload <session-id>
 
 $ session-id: printf "" --- --header "Предварительно нужно узнать его командой paseo agent ls --host ..."
 
 % paseo, session-list
-@ paseo, daemon, start
 
 # Посмотреть список всех сессий
-paseo agent ls --host <ip>:6767
+paseo agent ls
 
 % paseo, workspace
-@ paseo, daemon, start
 
 # Добавить новую папку с проектом
-paseo workspace create --isolation local --path <folder> --title <title> --host <ip>:6767
+paseo workspace create --isolation local --path <folder> --title <title>
 
 $ folder: find "$HOME/projects" \
     -mindepth 1 \
@@ -44,3 +42,98 @@ $ folder: find "$HOME/projects" \
     --- --prevent-extra
 
 $ title: basename "$folder"
+
+% shared
+
+$ change-dir: openspec instructions apply --change <change-name> --json | jq -r '.changeDir' --- --prevent-extra
+$ change-name: openspec list --json | jq -r '.changes[].name' --- --prevent-extra
+
+% paseo, run, task, openspec
+@ shared
+
+# Запустить выполнение задачи openspec
+message=$(
+cat <<'EOF'
+$openspec-apply-change <change-name>
+
+Реализуй только задачу <task-id>. К другим задачам не переходи.
+EOF
+); paseo run \
+    --provider codex \
+    --model "gpt-5.6-terra" \
+    --thinking xhigh \
+    --mode full-access \
+    --title "Выполнение задачи <task-id> из <change-name>" \
+    --background "$message" \
+    --workspace "$(
+        paseo workspace create \
+            --isolation local \
+            --title 'Выполнение задачи <task-id> из <change-name>' \
+            --json | jq -r '.workspaceId'
+    )"
+
+$ task-id: printf '%s\n' '<task-description>' | cut -d ' ' -f 1
+$ task-description: openspec instructions apply --change <change-name> --json \
+  | jq -r '.tasks[] | select(.done == false) | .description' --- --prevent-extra
+
+% paseo, run, resolve, change, issue, openspec
+@ shared
+
+# Запустить обсуждение change-review проблемам
+message=$(
+cat <<'EOF'
+$openspec-review-change <change-name>
+
+Давай разберём проблему <issue-id>.
+Донеси до меня суть этой проблемы. Действительно ли она актуальна.
+Насколько реальны случаи, когда она будет себя проявлять.
+Какие решения ты предлагаешь. Какие у этих решений компромиссы и стоит ли эта проблема этих компромиссов.
+А также, не зацикливайся только на разрабатываемом сейчас функционале, обрати внимание на общую картину. Возможно проблема более фундаметальна и коснётся и других будущих функций. И должна быть решена более фундаментально, чем конкретно для текущих работ.
+EOF
+); paseo run \
+    --provider codex \
+    --model "gpt-5.6-sol" \
+    --thinking xhigh \
+    --mode full-access \
+    --title 'Решение проблемы <issue-id>(artf) из <change-name>' \
+    --background "$message" \
+    --workspace "$(
+        paseo workspace create \
+            --isolation local \
+            --title 'Решение проблемы <issue-id>(artf) из <change-name>' \
+            --json | jq -r '.workspaceId'
+    )"
+
+$ issue-id: echo '<issue-name>' | sed -nE 's/^[[:space:]]*(F[^[:space:]]*).*/\1/p'
+$ issue-name: cat <change-dir>/review.md | sed -nE '/^[[:space:]]*###[[:space:]]*F/ { s/^[[:space:]]*###[[:space:]]*//; s/[[:space:]]+$//; p; }' --- --prevent-extra
+
+% paseo, run, resolve, implementation, issue, openspec
+@ shared
+
+# # Запустить обсуждение impl-review проблемам
+message=$(
+cat <<'EOF'
+$openspec-review-implementation <change-name>
+
+Давай разберём проблему <issue-id>.
+Донеси до меня суть этой проблемы. Действительно ли она актуальна.
+Насколько реальны случаи, когда она будет себя проявлять.
+Какие решения ты предлагаешь. Какие у этих решений компромиссы и стоит ли эта проблема этих компромиссов.
+А также, не зацикливайся только на разрабатываемом сейчас функционале, обрати внимание на общую картину. Возможно проблема более фундаметальна и коснётся и других будущих функций. И должна быть решена более фундаментально, чем конкретно для текущих работ.
+EOF
+); paseo run \
+    --provider codex \
+    --model "gpt-5.6-sol" \
+    --thinking xhigh \
+    --mode full-access \
+    --title 'Решение проблемы <issue-id>(impl) из <change-name>' \
+    --background "$message" \
+    --workspace "$(
+        paseo workspace create \
+            --isolation local \
+            --title 'Решение проблемы <issue-id>(impl) из <change-name>' \
+            --json | jq -r '.workspaceId'
+    )"
+
+$ issue-id: echo '<issue-name>' | sed -nE 's/^[[:space:]]*(F[^[:space:]]*).*/\1/p'
+$ issue-name: cat <change-dir>/implementation-review.md | sed -nE '/^[[:space:]]*###[[:space:]]*F/ { s/^[[:space:]]*###[[:space:]]*//; s/[[:space:]]+$//; p; }' --- --prevent-extra
