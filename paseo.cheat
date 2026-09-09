@@ -7,6 +7,13 @@ mise use -g npm:@getpaseo/cli@0.8.0-beta.1 \
 
 $ ip: hostname -I | tr ' ' '\n' | sed '/^$/d' --- --prevent-extra
 
+% paseo, plugin, update
+
+# Обновить выбранный плагин до новой версии
+paseo plugin update <plugin-name>
+
+$ plugin-name: paseo plugin ls --json | jq -r '.[].id'
+
 % paseo, daemon, start
 @ paseo, setup
 
