@@ -3,6 +3,7 @@
 # Установить paseo и все плагины его
 mise use -g npm:@getpaseo/cli@0.8.0-beta.1 \
     && paseo plugin add seniorkonung/paseo-mise-env \
+    && paseo plugin add seniorkonung/paseo-ntfy \
     && mise set -g PASEO_HOST=<ip>:6767
 
 $ ip: hostname -I | tr ' ' '\n' | sed '/^$/d' --- --prevent-extra
