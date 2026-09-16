@@ -63,6 +63,7 @@ EOF
             | .daemon.mcp = $daemon_mcp
         ' ~/.paseo/config.json > /tmp/paseo-config.json.tmp \
     && mv /tmp/paseo-config.json.tmp ~/.paseo/config.json \
+    && paseo plugin add seniorkonung/paseo-openspec-orchestrator \
     && paseo plugin add seniorkonung/paseo-mise-env \
     && paseo plugin add seniorkonung/paseo-ntfy \
 
