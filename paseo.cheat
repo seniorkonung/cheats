@@ -46,7 +46,7 @@ cat <<'EOF'
     "injectIntoAgents": true
 }
 EOF
-); mise use -g npm:@getpaseo/cli@0.8.0-beta.1 \
+); mise use -g npm:@getpaseo/cli \
     && mise set -g PASEO_HOST=<ip>:6767 \
     && jq \
         --argjson codex_orchestrator "$codex_orchestrator" \
@@ -63,6 +63,7 @@ EOF
             | .daemon.mcp = $daemon_mcp
         ' ~/.paseo/config.json > /tmp/paseo-config.json.tmp \
     && mv /tmp/paseo-config.json.tmp ~/.paseo/config.json \
+    && paseo daemon config set daemon.listen "$PASEO_HOST" \
     && paseo plugin add seniorkonung/paseo-openspec-orchestrator \
     && paseo plugin add seniorkonung/paseo-mise-env \
     && paseo plugin add seniorkonung/paseo-ntfy \
@@ -75,12 +76,6 @@ $ ip: hostname -I | tr ' ' '\n' | sed '/^$/d' --- --prevent-extra
 paseo plugin update <plugin-name>
 
 $ plugin-name: paseo plugin ls --json | jq -r '.[].id'
-
-% paseo, daemon, start
-@ paseo, setup
-
-# Запустить демон paseo
-paseo daemon start --listen $PASEO_HOST
 
 % paseo, session, import
 
